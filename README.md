@@ -5,9 +5,9 @@ This document explains how to create and manage Instant Access (IA) application 
 **NOTE: This feature should not be used for production workloads until General Availability (GA). Microsoft Privacy Statement: https://privacy.microsoft.com/en-us/privacystatement**
 
 ## Enable subscritpion with this feature
--  1. Open the Cloud shell (PowerShell) from portal. Direct link -> <a href="https://shell.azure.com/" rel="noreferrer noopener" title="https://shell.azure.com/" target="_blank">https://shell.azure.com/</a>
--  2. Ensure your using the subscription which will be used for testing this feature.
--  3. Run
+- Open the Cloud shell (PowerShell) from portal. Direct link -> <a href="https://shell.azure.com/" rel="noreferrer noopener" title="https://shell.azure.com/" target="_blank">https://shell.azure.com/</a>
+- Ensure your using the subscription which will be used for testing this feature.
+- Run
       `Register-AzProviderFeature -FeatureName 'AppConsistentInstantAccessSnapshotForDirectDriveDisks' -ProviderNamespace 'Microsoft.Compute'`
 - API version **2025-04-01** or later is supported.
 - Regions Supported: EASTUS2EUAP.
