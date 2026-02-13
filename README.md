@@ -4,24 +4,15 @@ This document explains how to create and manage Instant Access (IA) application 
 
 **NOTE: This feature should not be used for production workloads until General Availability (GA). Microsoft Privacy Statement: https://privacy.microsoft.com/en-us/privacystatement**
 
-## Prerequisites
-- Customer can sign up by themselves using the below documentation:
-  - Documentation on how to enable the AFEC:
-    - Register - https://learn.microsoft.com/en-us/powershell/module/az.resources/register-azproviderfeature?view=az…
-    - Unregister - https://learn.microsoft.com/en-us/powershell/module/az.resources/unregister-azproviderfeature?view=…
-    - Get - https://learn.microsoft.com/en-us/powershell/module/az.resources/get-azproviderfeature?view=azps-15…
-  - AFECs to be enabled are:
-    - Microsoft.Compute/AppConsistentInstantAccessSnapshotForDirectDriveDisks
-     ## PowerShell commands to enable AFEC
-      ```powershell
-      Get-AzProviderFeature -FeatureName "AppConsistentInstantAccessSnapshotForDirectDriveDisks" -ProviderNamespace "Microsoft.Compute"
-      ```
-      ```powershell
-      Register-AzProviderFeature -FeatureName AppConsistentInstantAccessSnapshotForDirectDriveDisks -ProviderNamespace Microsoft.Compute
-      ```
+## Enable subscritpion with this feature
+-  1. Open the Cloud shell (PowerShell) from portal. Direct link -> <a href="https://shell.azure.com/" rel="noreferrer noopener" title="https://shell.azure.com/" target="_blank">https://shell.azure.com/</a>
+-  2. Ensure your using the subscription which will be used for testing this feature.
+-  3. Run
+      `Register-AzProviderFeature -FeatureName 'AppConsistentInstantAccessSnapshotForDirectDriveDisks' -ProviderNamespace 'Microsoft.Compute'`
 - API version **2025-04-01** or later is supported.
 - Regions Supported: EASTUS2EUAP.
 - Client tools supported: REST API and SDK.
+- Please check below on how to [disable the feature](#Disable-Instant-Access-on-Restore-Point-Collection) along with unregistering this feature.
 ## Unsupported Configurations
 - More than 50 restore points should not be created concurrently at a given time per subscription per region.
 ## Key Concepts
@@ -145,5 +136,31 @@ GET https://management.azure.com/subscriptions/{subscriptionId}/resourceGroups/{
 ```
 - snapshotAccessState: Indicates InstantAccess status of individual disk restore point.
 
+### Step 7: Disable Instant Access on Restore Point Collection
+  Use the following REST API call to disable IA enabled on the VM. 
+  ```http
+  PATCH https://management.azure.com/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Compute/restorePointCollections/{restorePointCollectionName}?api-version=2025-04-01
+  ```
+#### Request Body Example:
+```json
+  {
+    "location": "<region>",
+    "properties": {
+      "source": {
+        "id": "<VM Arm Id>"
+      },
+      "instantAccess": false
+    },
+    "tags": {
+      "myTag1": "tagValue1"
+    }
+  }
+  ```
+To unregister this feature. 
+Open the Cloud shell (PowerShell) from portal. Direct link -> <a href="https://shell.azure.com/" rel="noreferrer noopener" title="https://shell.azure.com/" target="_blank">https://shell.azure.com/</a> and run the below commands:  
+
+- Run
+      `Unregister-AzProviderFeature -FeatureName 'AppConsistentInstantAccessSnapshotForDirectDriveDisks' -ProviderNamespace 'Microsoft.Compute'`
+  
 # Next Steps
 Learn more about Backup and restore options for virtual machines in Azure.
